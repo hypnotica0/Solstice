@@ -1,7 +1,12 @@
 package net.hypnotica_.solstice;
 
 import com.mojang.logging.LogUtils;
+import net.hypnotica_.solstice.items.ModCreativeTab;
+import net.hypnotica_.solstice.items.ModItems;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.CreativeModeTabRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -15,11 +20,13 @@ import org.slf4j.Logger;
 
 @Mod(Solstice.MOD_ID)
 public class Solstice {
-    public static final String MOD_ID = "solstice_1";
+    public static final String MOD_ID = "solstice";
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public Solstice() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModCreativeTab.register(modEventBus);
+        ModItems.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);
@@ -30,7 +37,9 @@ public class Solstice {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(ModItems.SOLARGEM);
+        }
     }
 
     @SubscribeEvent
